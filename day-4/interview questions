@@ -1,0 +1,204 @@
+1. What is a VPC?
+Answer:
+Amazon VPC is a logically isolated network in AWS where you can launch resources like EC2.
+
+👉 Think of it as your own data center network in the cloud.
+
+2. What are the components of a VPC?
+Answer:
+Subnets
+Route Tables
+Internet Gateway
+NAT Gateway
+Security Groups
+Network ACLs
+
+👉 These together define networking behavior.
+
+3. What is a Subnet?
+Answer:
+A subnet is a range of IP addresses within a VPC.
+
+👉 Types:
+Public subnet (internet access)
+Private subnet (no direct internet)
+
+4. Difference between Public and Private Subnet?
+Answer:
+Public Subnet	Private Subnet
+Has route to Internet Gateway	No direct internet
+Used for web servers	Used for DB, backend
+
+5. What is an Internet Gateway?
+Answer:
+A component that allows communication between VPC and the internet.
+
+👉 Attach IGW to VPC + route traffic to it
+
+6. What is a NAT Gateway?
+Answer:
+AWS NAT Gateway allows private subnet instances to access the internet (outbound only).
+
+👉 Example:
+EC2 in private subnet downloading updates
+
+7. What is a Route Table?
+Answer:
+Defines how traffic flows in a VPC.
+
+👉 Example:
+0.0.0.0/0 → IGW (public access)
+0.0.0.0/0 → NAT (private outbound)
+
+8. What are Security Groups?
+Answer:
+Instance-level firewall.
+
+👉 Features:
+Stateful
+Only allow rules
+Applied to EC2
+
+9. What are Network ACLs?
+Answer:
+Subnet-level firewall.
+
+👉 Features:
+Stateless
+Allow & Deny rules
+Applied at subnet level
+
+10. Difference between Security Group vs NACL?
+Answer:
+Security Group	NACL
+Stateful	Stateless
+Allow rules only	Allow & Deny
+Instance level	Subnet level
+
+11. What is CIDR block?
+Answer:
+Defines IP range for VPC.
+
+👉 Example:
+10.0.0.0/16
+
+👉 Important for subnet planning
+
+12. What is VPC Peering
+Answer:
+Connects two VPCs privately.
+
+👉 Use case:
+Dev VPC ↔ Prod VPC
+
+👉 Limitation:
+No transitive routing
+
+13. What is VPC Endpoint?
+Answer:
+Private connection to AWS services without internet.
+
+👉 Types:
+Gateway endpoint (S3, DynamoDB)
+Interface endpoint (PrivateLink)
+
+14. What is PrivateLink?
+Answer:
+Secure private connectivity to services without exposing traffic to internet.
+
+15. What is Elastic Network Interface (ENI)?
+Answer:
+Virtual network card attached to EC2.
+
+👉 Includes:
+Private IP
+Security Groups
+
+16. What is Flow Log?
+Answer:
+Captures network traffic logs in VPC.
+
+👉 Stored in:
+Amazon CloudWatch
+Amazon S3
+
+👉 Used for:
+Troubleshooting
+Security audits
+
+17. How do you design a secure VPC?
+Answer:
+Public subnet → Load balancer
+Private subnet → App servers
+Private subnet → DB
+Use NAT for outbound
+Use Security Groups + NACL
+
+18. What is a Bastion Host?
+Answer:
+EC2 instance in public subnet used to access private instances via SSH.
+
+👉 Alternative:
+Use SSM Session Manager (better)
+
+19. What is Transit Gateway?
+Answer:
+Central hub to connect multiple VPCs and on-prem networks.
+
+👉 Better than multiple peerings
+
+20. What is Hybrid Connectivity?
+Answer:
+VPN (IPSec)
+Direct Connect
+
+👉 Connect AWS ↔ On-prem data center
+
+🔥 Scenario-Based Questions (High Priority)
+Q1: EC2 in private subnet cannot access internet. Why?
+Answer:
+No NAT Gateway
+Route table missing NAT route
+Security group blocking
+
+Q2: Cannot access EC2 from internet. Fix?
+Answer:
+Check IGW attached
+Check route table
+Check Security Group (port open)
+Check public IP
+
+Q3: How to securely access private EC2?
+Answer:
+Bastion host OR
+SSM Session Manager (preferred)
+
+Q4: Two VPCs need communication. How?
+Answer:
+VPC Peering
+Transit Gateway (for scale)
+
+Q5: How to restrict access to S3 privately?
+Answer:
+Use VPC Endpoint
+Block public access
+
+🚀 DevOps Best Practices
+🔹 Multi-AZ Architecture
+Subnets across AZs
+High availability
+
+🔹 Network Segmentation
+Separate:
+Web
+App
+DB
+
+🔹 Zero Trust Approach
+Restrict all traffic
+Open only required ports
+
+🔹 Infrastructure as Code
+Use:
+CloudFormation
+Terraform
