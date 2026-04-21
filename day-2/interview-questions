@@ -19,3 +19,279 @@ A: The principle of least privilege states that users should be granted only the
 Q: What is an AWS managed policy?
 
 A: An AWS managed policy is a predefined policy created and managed by AWS. These policies cover common use cases and provide predefined permissions for specific AWS services or actions. AWS managed policies are maintained and updated by AWS, ensuring they stay up to date with new AWS services and features. They can be attached to IAM users, groups, or roles in your AWS account.
+
+
+1. What is IAM in AWS?
+
+Answer: IAM (Identity and Access Management) is a service that helps you securely control access to AWS resources by defining who (users/roles) can do what (permissions/policies) on which resources.
+
+👉 Key components:
+Users
+Groups
+Roles
+Policies
+
+2. Difference between IAM User vs Role?
+
+Answer: IAM User	IAM Role
+Permanent identity	Temporary identity
+Has long-term credentials	Uses temporary credentials (STS)
+Used by humans/services	Used by services, apps, cross-account
+Needs access keys/password	Assumed dynamically
+
+👉 DevOps Tip: Always prefer roles over users (especially for EC2, Lambda, CI/CD).
+
+3. What is an IAM Policy?
+
+Answer: A JSON document that defines permissions.
+
+👉 Structure:
+
+Effect (Allow/Deny)
+Action
+Resource
+Condition (optional)
+
+Example:
+{
+  "Effect": "Allow",
+  "Action": "s3:PutObject",
+  "Resource": "arn:aws:s3:::my-bucket/*"
+}
+
+4. What is the difference between Managed and Inline Policies?
+
+Answer:
+Managed Policy	Inline Policy
+Reusable	Attached to one entity
+Can be AWS or customer-managed	Strictly embedded
+Easier to manage at scale	Hard to maintain
+
+👉 In DevOps: Use managed policies for scalability
+
+5. What is the Principle of Least Privilege?
+
+Answer: Give only the minimum permissions required to perform a task.
+
+👉 Example:
+Instead of:
+"s3:*"
+Use:
+"s3:GetObject"
+
+👉 Interview insight: This is one of the most asked IAM concepts
+
+6. What is AssumeRole?
+
+Answer:
+Allows a user/service to temporarily take permissions of a role using STS (Security Token Service).
+
+👉 Used for:
+
+Cross-account access
+
+CI/CD pipelines
+
+EC2 instance roles
+
+7. How do you allow EC2 to access S3 securely?
+
+Answer:
+
+Create an IAM Role
+Attach policy (S3 access)
+Attach role to EC2 instance
+
+👉 Never use access keys inside EC2.
+
+8. What are IAM Groups?
+
+Answer:
+Collection of users with the same permissions.
+
+👉 Example:
+Dev Team
+Admin Team
+
+👉 DevOps practice: Assign permissions to groups, not users
+
+9. What is STS?
+
+Answer:
+AWS Security Token Service provides temporary credentials.
+
+👉 Benefits:
+
+More secure than long-term keys
+Auto-expiry
+Used in role assumption
+
+10. What is a Trust Policy?
+
+Answer:
+Defines who can assume a role.
+
+👉 Example:
+
+{
+  "Effect": "Allow",
+  "Principal": {
+    "Service": "ec2.amazonaws.com"
+  },
+  "Action": "sts:AssumeRole"
+}
+
+11. What are IAM Conditions?
+
+Answer:
+Extra security filters in policies.
+
+👉 Example:
+
+Restrict by IP
+Restrict by time
+Restrict by MFA
+
+"Condition": {
+  "IpAddress": {
+    "aws:SourceIp": "192.168.1.0/24"
+  }
+}
+
+12. What is MFA in IAM?
+
+Answer:
+Multi-Factor Authentication adds an extra layer of security.
+
+👉 DevOps best practice:
+
+Enable MFA for root account
+Enable MFA for privileged users
+
+13. What is the root account and why avoid using it?
+
+Answer:
+Created with AWS account
+Has full access to everything
+
+👉 Best practice:
+
+Use only for initial setup
+Enable MFA
+Never use in daily operations
+
+14. How do you manage secrets securely?
+
+Answer:
+Use IAM roles instead of access keys
+
+Use:
+AWS Secrets Manager
+AWS Systems Manager Parameter Store
+
+👉 Never hardcode secrets in code or Git.
+
+15. How do you implement IAM in CI/CD pipelines?
+
+Answer:
+Use IAM roles for:
+Jenkins
+GitHub Actions
+CodePipeline
+Use AssumeRole for deployments
+Avoid static credentials
+
+👉 Real-world:
+
+GitHub OIDC → AssumeRole → Deploy
+
+16. What is Cross-Account Access?
+
+Answer:
+Allow one AWS account to access resources in another account using roles.
+
+👉 Example:
+
+Dev account → Prod account deployment
+
+17. What is Permission Boundary?
+
+Answer:
+Defines maximum permissions a user/role can have.
+
+👉 Useful for:
+
+Restricting developers
+Governance
+
+18. What are Service Control Policies (SCP)?
+
+Answer:
+Used in AWS Organizations to control permissions at account level.
+
+👉 Example:
+
+Block deleting S3 buckets
+Restrict regions
+
+19. How do you audit IAM activities?
+
+Answer:
+Use:
+
+AWS CloudTrail
+
+AWS CloudWatch
+
+👉 Tracks:
+
+Who did what
+When
+From where
+
+20. Common IAM Mistakes (VERY IMPORTANT)
+
+Answer:
+
+Using root account regularly ❌
+Hardcoding access keys ❌
+Giving *:* permissions ❌
+Not rotating keys ❌
+No MFA ❌
+
+👉 Interview tip: Mentioning mistakes = strong signal
+
+🔥 Scenario-Based Questions (High Value)
+Q1: Developer cannot access S3 bucket. How do you debug?
+
+Answer:
+
+Check IAM policy
+Check bucket policy
+Check explicit deny
+Check role assumption
+Use IAM Policy Simulator
+
+Q2: How to restrict access to specific IP?
+
+Answer:
+Use Condition:
+"IpAddress": {
+  "aws:SourceIp": "X.X.X.X/32"
+}
+
+Q3: How to allow only read access to S3?
+
+Answer:
+
+"Action": [
+  "s3:GetObject",
+  "s3:ListBucket"
+]
+
+Q4: How to securely give access to a third-party tool?
+
+Answer:
+Create IAM Role
+Provide Role ARN
+Use External ID
