@@ -1,0 +1,241 @@
+1. What is EC2?
+Answer:
+Amazon EC2 (Elastic Compute Cloud) provides resizable virtual servers in the cloud where you can run applications.
+
+👉 Key idea: Infrastructure as a Service (IaaS)
+
+2. What are EC2 instance types?
+Answer:
+Different configurations optimized for use cases:
+
+Type	Use Case
+General Purpose (t3, t4g)	Balanced workloads
+Compute Optimized (c5)	CPU-intensive apps
+Memory Optimized (r5)	Databases
+Storage Optimized (i3)	High IOPS workloads
+
+👉 DevOps tip: Choose based on CPU, RAM, network, cost
+
+3. What is AMI?
+Answer:
+Amazon Machine Image = template used to launch EC2 instances.
+
+👉 Contains:
+OS
+Application stack
+Configurations
+
+👉 Types:
+AWS-managed
+Custom AMI (golden image)
+
+4. What is EBS?
+Answer:
+Amazon EBS is persistent block storage attached to EC2.
+
+👉 Key features:
+Data persists after instance stop
+Supports snapshots
+Used for OS + data
+
+5. Instance Store vs EBS?
+Answer:
+Instance Store	EBS
+Temporary storage	Persistent
+Data lost on stop/terminate	Data survives
+High performance	Flexible
+
+👉 Use instance store for cache/temp data
+
+6. What is a Security Group?
+Answer:
+Acts as a virtual firewall for EC2.
+
+👉 Characteristics:
+Stateful
+Allows only rules (no deny)
+Works at instance level
+
+Example:
+Allow SSH (22)
+Allow HTTP (80)
+
+7. What is a Key Pair?
+Answer:
+Used for secure SSH access to EC2.
+
+👉 Includes:
+Public key (stored in AWS)
+Private key (you download)
+
+8. What is Elastic IP?
+Answer:
+Static public IP address for EC2.
+
+👉 Use when:
+You need fixed IP
+Reassign to another instance
+
+👉 Avoid overuse → cost applies
+
+9. What is Auto Scaling?
+Answer:
+AWS Auto Scaling automatically adjusts EC2 instances based on load.
+
+👉 Benefits:
+High availability
+Cost optimization
+
+10. What is a Load Balancer?
+Answer:
+Elastic Load Balancing distributes traffic across multiple EC2 instances.
+
+👉 Types:
+Application LB (Layer 7)
+Network LB (Layer 4)
+
+11. What is User Data in EC2?
+Answer:
+Script that runs during instance launch.
+
+👉 Example:
+#!/bin/bash
+yum install -y nginx
+systemctl start nginx
+
+👉 DevOps use:
+Bootstrapping
+Auto configuration
+
+12. What is an EC2 Lifecycle?
+Answer:
+States:
+Pending → Running → Stopping → Stopped → Terminated
+
+👉 Important:
+EBS persists in stop
+Instance store does NOT
+
+13. What is Placement Group?
+Answer:
+Controls how instances are placed physically.
+
+👉 Types:
+Cluster (low latency)
+Spread (fault tolerance)
+Partition
+
+14. What is IAM Role in EC2?
+Answer:
+Role attached to EC2 to access AWS services securely.
+
+👉 Example:
+EC2 → S3 access
+
+👉 Best practice:
+Avoid access keys
+
+15. What is Spot Instance?
+Answer:
+Unused EC2 capacity at lower cost (up to ~90%)
+
+👉 Risk:
+Can be terminated anytime
+
+👉 Use:
+Batch jobs
+CI workloads
+
+16. What is Reserved Instance?
+Answer:
+Prepaid EC2 for long-term usage discount
+
+👉 Good for:
+Stable workloads
+
+17. What is EC2 Metadata?
+Answer:
+Internal endpoint:
+http://169.254.169.254
+
+👉 Provides:
+Instance ID
+IAM role credentials
+
+👉 DevOps use:
+Dynamic configuration
+
+18. How do you monitor EC2?
+Answer:
+Use:
+Amazon CloudWatch
+Metrics: CPU, Disk, Network
+
+👉 Add alarms for:
+Auto scaling
+Alerts
+
+19. How do you secure EC2?
+Answer:
+Use Security Groups
+Use IAM Roles
+Disable root login
+Use SSH keys (not passwords)
+Enable patching
+
+20. How do you create a highly available EC2 setup?
+Answer:
+Use multiple AZs
+Use Load Balancer
+Use Auto Scaling Group
+
+🔥 Scenario-Based Questions (Must Prepare)
+Q1: Website is down on EC2. How do you troubleshoot?
+Answer:
+Check instance status
+Check Security Group (port 80/443)
+Check application (nginx/apache)
+Check logs
+Check CPU/memory
+Check Load Balancer health check
+
+Q2: EC2 instance is slow. What do you do?
+Answer:
+Check CloudWatch metrics
+CPU high → scale up/out
+Memory issue → change instance type
+Disk I/O → optimize EBS
+
+Q3: Cannot SSH into EC2. Fix?
+Answer:
+Check Security Group (port 22)
+Check key pair
+Check instance state
+Check NACL
+
+Q4: How to deploy app automatically on EC2?
+Answer:
+Use User Data OR
+Use CI/CD tools:
+Jenkins
+GitHub Actions
+Use AMI baking
+
+Q5: How to reduce EC2 cost?
+Answer:
+Use Spot instances
+Use Auto Scaling
+Stop unused instances
+Use Reserved instances
+
+🚀 DevOps Real-World Insights
+🔹 Immutable Infrastructure
+Create AMI → Deploy → Replace
+Avoid manual changes
+
+🔹 Blue-Green Deployment
+Two environments
+Switch traffic via Load Balancer
+
+🔹 CI/CD Integration
+Build → AMI → Deploy via Auto Scaling
