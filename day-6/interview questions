@@ -1,0 +1,201 @@
+1. What is Route 53 and why is it used?
+Answer:
+Amazon Route 53 is a scalable DNS and traffic routing service used to:
+Translate domain names → IP addresses
+Route traffic based on rules
+Perform health checks and failover
+
+2. What are the different types of DNS records in Route 53?
+Answer:
+A → Maps domain to IPv4
+AAAA → IPv6
+CNAME → Alias to another domain
+MX → Mail servers
+TXT → Verification, SPF
+
+👉 DevOps relevance: Used heavily in domain validation, SSL, and service routing
+
+3. What is the difference between CNAME and Alias record?
+Answer:
+CNAME	Alias
+Maps to another domain	Maps to AWS resource
+Cannot be used at root domain	Can be used at root
+Extra DNS lookup	No extra lookup
+
+👉 Alias is optimized for AWS (e.g., ELB, S3, CloudFront)
+
+4. What is DNS TTL and why is it important?
+Answer:
+TTL (Time To Live) defines how long DNS responses are cached.
+
+👉 Impact:
+Low TTL → Faster updates, more queries
+High TTL → Better performance, slower changes
+
+👉 DevOps tip:
+Use low TTL during deployments
+
+5. What is a Hosted Zone?
+Answer:
+A container for DNS records of a domain.
+
+👉 Types:
+Public Hosted Zone
+Private Hosted Zone (for VPC)
+
+6. What is a Private Hosted Zone?
+Answer:
+DNS resolution within a VPC only.
+
+👉 Use case:
+Internal services (e.g., db.internal.local)
+
+7. What is DNS propagation?
+Answer:
+Time taken for DNS changes to reflect globally.
+
+👉 Influenced by:
+TTL
+DNS caching
+
+8. What are Routing Policies in Route 53?
+Answer:
+Different ways to route traffic:
+Simple
+Weighted
+Latency-based
+Failover
+Geolocation
+Multi-value answer
+
+9. What is Weighted Routing?
+Answer:
+Distributes traffic based on percentage.
+
+👉 Example:
+80% → old version
+20% → new version
+
+👉 DevOps use: Canary deployment
+
+10. What is Latency-Based Routing?
+Answer:
+Routes users to the lowest latency region.
+
+👉 Improves performance globally
+
+11. What is Failover Routing?
+Answer:
+Routes traffic to backup resource if primary fails.
+
+👉 Uses health checks
+
+12. What is Geolocation Routing?
+Answer:
+Routes traffic based on user’s location.
+
+👉 Example:
+India → Indian server
+US → US server
+
+13. What is Multi-Value Routing?
+Answer:
+Returns multiple IPs for load distribution + health checks.
+
+👉 Similar to basic load balancing
+
+14. What are Health Checks in Route 53?
+Answer:
+Monitor endpoint health.
+
+👉 Checks:
+HTTP
+HTTPS
+TCP
+
+👉 Used in:
+Failover routing
+High availability
+
+15. What is DNS failover mechanism?
+Answer:
+Primary record + health check
+Secondary record triggered on failure
+
+👉 Used for DR (Disaster Recovery)
+
+16. How does Route 53 integrate with Load Balancers?
+Answer:
+Use Alias record → ELB DNS
+
+👉 Benefits:
+No hardcoding IP
+Automatic scaling support
+
+17. What is Split Horizon DNS?
+Answer:
+Different DNS responses for internal vs external users.
+
+👉 Example:
+Internal → private IP
+External → public IP
+
+18. How do you secure Route 53?
+Answer:
+IAM policies
+Restrict zone changes
+Enable logging
+
+Use:
+AWS CloudTrail
+
+19. How do you implement blue-green deployment using Route 53?
+Answer:
+Use weighted routing
+Gradually shift traffic
+
+👉 Example:
+Blue: 90%
+Green: 10% → increase gradually
+
+20. How do you troubleshoot DNS issues?
+Answer:
+Check DNS record
+Verify TTL
+Check propagation
+
+Use tools:
+nslookup
+dig
+Check health checks
+
+🔥 Scenario-Based Questions (High Impact)
+Q1: Users cannot access your website via domain but EC2 IP works
+Answer:
+Check Route 53 record
+Check DNS propagation
+Check TTL
+Verify correct IP mapping
+
+Q2: How to route traffic to multiple regions?
+Answer:
+Use latency-based routing OR
+Weighted routing
+
+Q3: How to ensure high availability using DNS?
+Answer:
+Use failover routing
+Use health checks
+Multi-region deployment
+
+Q4: Domain not resolving after update
+Answer:
+TTL delay
+DNS cache issue
+Wrong nameservers
+
+Q5: How to route internal traffic differently from external?
+Answer:
+Use private hosted zone
+Use split DNS
+
