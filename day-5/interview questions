@@ -1,0 +1,212 @@
+1. How does AWS evaluate traffic when both Security Groups and NACLs are applied?
+Answer:
+Traffic must pass both layers:
+NACL (Subnet level) → first check (stateless)
+Security Group (Instance level) → second check (stateful)
+
+👉 If either denies → traffic is blocked
+
+2. What happens if NACL allows traffic but Security Group denies it?
+Answer:
+Traffic is DENIED.
+
+👉 Reason:
+Security Group acts as final gatekeeper at instance level
+
+3. Can Security Groups block specific IPs?
+Answer:
+No direct deny rules in Security Groups.
+
+👉 Workaround:
+Use NACL deny rule for specific IP
+
+4. How do ephemeral ports affect NACL configuration?
+Answer:
+NACLs are stateless → return traffic must be explicitly allowed.
+
+👉 Example:
+Client → port 80
+Response → ephemeral port (1024–65535)
+
+👉 You must allow:
+Inbound: 80
+Outbound: 1024-65535
+
+5. Why is Security Group considered stateful?
+Answer:
+Return traffic is automatically allowed.
+
+👉 Example:
+Allow inbound 80 → response automatically allowed (no outbound rule needed)
+
+6. How do you design NACL rules for a web application?
+Answer:
+Inbound:
+80, 443 → Allow
+Ephemeral ports → Allow
+Outbound:
+All required ports → Allow
+
+👉 Also:
+Add explicit DENY for malicious IPs
+
+7. What is the default behavior of a new NACL
+Answer:
+Default NACL → Allow all
+Custom NACL → Deny all
+
+👉 Important interview catch
+
+8. Can a subnet have multiple NACLs?
+Answer:
+No.
+
+👉 One subnet = one NACL
+👉 One NACL can be attached to multiple subnets
+
+9. How do you isolate tiers in a 3-tier architecture using VPC?
+Answer:
+Public Subnet → Load Balancer
+Private Subnet → App Servers
+Private Subnet → Database
+
+👉 Control flow using:
+Security Groups (tight rules)
+NACL (extra protection layer)
+
+10. How do you allow only a Load Balancer to access EC2 instances?
+Answer:
+In EC2 Security Group:
+Allow traffic only from Load Balancer SG
+
+👉 Example:
+Source: SG of Load Balancer
+Port: 80
+
+👉 This is a very strong DevOps answer
+
+11. How do you debug connectivity issues between two EC2 instances in same VPC?
+Answer:
+Check Security Group rules
+Check NACL rules
+Check route table (rare case)
+Check OS firewall (iptables)
+
+12. Why would you use NACL if Security Groups exist?
+Answer:
+Block specific IPs (deny rules)
+Add extra security layer
+Compliance requirements
+
+👉 Security Groups = primary
+👉 NACL = secondary defense
+
+13. How do you restrict SSH access to EC2?
+Answer:
+Security Group:
+Allow port 22 only from your IP
+
+👉 Example:
+Source: X.X.X.X/32
+👉 Bonus:
+Use Bastion or SSM instead
+
+14. What is asymmetric routing and how can NACL affect it?
+Answer:
+Traffic enters via one path and exits via another.
+
+👉 Since NACL is stateless:
+Return path must also be allowed
+Otherwise → packet dropped
+
+15. How do you implement Zero Trust in VPC?
+Answer:
+No open access (0.0.0.0/0)
+Use strict Security Group rules
+Use private subnets
+Use IAM roles + VPC endpoints
+
+16. How do you allow internal communication within a VPC?
+Answer:
+Use Security Group:
+Source: same SG
+
+👉 Allows all instances in that SG to talk
+
+17. Can Security Groups span across VPCs?
+Answer:
+No.
+
+👉 They are VPC-specific
+
+18. How do you log rejected traffic in VPC?
+Answer:
+Use:
+Amazon VPC Flow Logs
+
+👉 Helps detect:
+Blocked IPs
+Unauthorized attempts
+
+19. What happens if there are conflicting NACL rules?
+Answer:
+Rules are evaluated in order (lowest number first)
+
+👉 First match wins
+
+20. How do you protect against DDoS at VPC level?
+Answer:
+Use:
+Security Groups (restrict traffic)
+NACL (block IP ranges)
+AWS Shield
+AWS WAF
+
+🔥 Scenario-Based Questions (Advanced)
+Q1: App works internally but not from internet
+Answer:
+Check IGW
+Check route table
+Check Security Group (port open)
+Check NACL inbound/outbound
+
+Q2: EC2 can send request but not receive response
+
+Answer:
+👉 Classic NACL issue:
+Outbound allowed
+Inbound ephemeral port blocked
+
+Q3: You want to block a malicious IP across entire subnet
+Answer:
+Add DENY rule in NACL
+
+Q4: Database should only accept traffic from app servers
+Answer:
+DB Security Group:
+Allow only App SG
+
+Q5: Traffic allowed but still failing
+Answer:
+Check:
+OS firewall
+Routing
+DNS
+Application layer
+
+🚀 Pro DevOps Insights (What Interviewers Love)
+🔹 Layered Security Model
+NACL → coarse control
+Security Group → fine-grained control
+
+🔹 Prefer Security Groups Over NACL
+Easier to manage
+Stateful
+Less error-prone
+
+🔹 Use SG Referencing (Advanced)
+SG → SG communication instead of IP
+
+🔹 Minimize Open Ports
+Only required ports
+Avoid 0.0.0.0/0
