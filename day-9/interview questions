@@ -1,0 +1,191 @@
+1. What is Amazon S3 and why is it widely used?
+Answer:
+Amazon S3 is a highly durable, scalable object storage service used for storing and retrieving any amount of data.
+
+👉 DevOps use cases:
+Static website hosting
+Backup & disaster recovery
+Artifact storage (CI/CD)
+Logs storage
+
+2. What is S3 consistency model?
+Answer:
+S3 provides:
+Strong read-after-write consistency for PUT/DELETE
+Strong consistency for overwrite as well (modern S3)
+
+👉 Earlier it was eventual → interviewers like this update
+
+3. What is S3 Versioning and why is it important?
+Answer:
+Keeps multiple versions of an object.
+
+👉 Benefits:
+Protects from accidental deletion
+Enables rollback
+Required for replication
+
+4. What is S3 Lifecycle Policy?
+Answer:
+Automates object transitions between storage classes or deletion.
+
+👉 Example:
+Move to Glacier after 30 days
+Delete after 365 days
+
+👉 DevOps use: cost optimization
+
+5. What are S3 Storage Classes?
+Answer:
+Class	Use Case
+Standard	Frequent access
+Intelligent-Tiering	Unknown access
+Standard-IA	Infrequent
+Glacier	Archival
+Glacier Deep Archive	Long-term backup
+
+6. What is S3 Intelligent-Tiering?
+Answer:
+Automatically moves objects between tiers based on access patterns.
+
+👉 No need to manually manage lifecycle
+
+7. What is S3 Replication?
+Answer:
+Automatically copies objects to another bucket.
+
+👉 Types:
+Same Region Replication (SRR)
+Cross Region Replication (CRR)
+
+👉 Requirements:
+Versioning enabled
+
+8. What is S3 Event Notification?
+Answer:
+Triggers actions when events occur.
+
+👉 Example:
+Upload → trigger Lambda
+Delete → send notification
+
+9. What is S3 Pre-Signed URL?
+Answer:
+Temporary URL to access private objects.
+
+👉 Use case:
+Secure file sharing
+Upload/download without exposing credentials
+
+10. What is S3 Transfer Acceleration?
+Answer:
+Speeds up uploads using AWS edge locations.
+
+👉 Useful for:
+Global users uploading data
+
+11. What is S3 Object Lock?
+Answer:
+Prevents object deletion/modification.
+
+👉 Modes:
+Governance
+Compliance
+
+👉 Used for:
+Regulatory requirements
+
+12. What is S3 Bucket Policy vs IAM Policy?
+Answer:
+Bucket Policy	IAM Policy
+Attached to bucket	Attached to user/role
+Resource-based	Identity-based
+Cross-account access	User permissions
+
+13. What is Block Public Access in S3?
+Answer:
+Prevents accidental public exposure.
+
+👉 Must be enabled in production
+
+14. What is S3 Encryption?
+Answer:
+Types:
+SSE-S3 (AWS managed)
+SSE-KMS (KMS managed)
+SSE-C (Customer provided)
+
+👉 DevOps best practice:
+Use SSE-KMS
+
+15. What is S3 Access Logging?
+Answer:
+Logs all access requests to a bucket.
+
+👉 Stored in another bucket
+👉 Used for audit and security
+
+16. What is S3 Inventory?
+Answer:
+Provides list of objects in a bucket.
+
+👉 Useful for:
+Auditing
+Compliance
+
+17. What is Multipart Upload?
+Answer:
+Uploads large files in parts.
+
+👉 Benefits:
+Faster uploads
+Retry failed parts only
+
+18. What is S3 Select?
+Answer:
+Retrieve only required data using SQL-like query.
+
+👉 Reduces data transfer cost
+
+19. How do you secure S3 access?
+Answer:
+Use IAM roles
+Use bucket policies
+Enable encryption
+Block public access
+Enable logging
+
+20. What is S3 Static Website Hosting limitation?
+Answer:
+Only HTTP (no HTTPS directly)
+Requires CloudFront for HTTPS
+
+👉 Integrate with:
+Amazon CloudFront
+
+🔥 Scenario-Based Questions (High Value)
+Q1: S3 bucket is public accidentally. How do you fix?
+Answer:
+Enable Block Public Access
+Remove public bucket policy
+Audit using logs
+
+Q2: How to share a private file temporarily?
+Answer:
+Use Pre-Signed URL
+
+Q3: How to reduce S3 storage cost?
+Answer:
+Lifecycle policies
+Intelligent tiering
+Delete unused data
+
+Q4: Data needs to be replicated to another region automatically
+Answer:
+Enable CRR
+Enable versioning
+
+Q5: Large file upload failing
+Answer:
+Use multipart upload
+Check network limits
